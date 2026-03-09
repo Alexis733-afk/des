@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buenas noches, Day 🌙</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --night: #0a0e1a;
+    --deep: #0f1528;
+    --soft: #1a2040;
+    --accent: #c9a96e;
+    --moon: #f5e6c8;
+    --star: #e8d5a3;
+    --text: #e8e0d5;
+    --muted: #8a8070;
+  }
+
+  body {
+    background: var(--night);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Stars background */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* Moon */
+  .moon {
+    position: fixed;
+    top: 40px;
+    right: 80px;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle at 35% 35%, var(--moon), #d4b87a);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(245, 230, 200, 0.3), 0 0 80px rgba(245, 230, 200, 0.1);
+    animation: moonFloat 6s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .moon::before {
+    content: '';
+    position: absolute;
+    top: 15px; left: 20px;
+    width: 18px; height: 18px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 50%;
+  }
+
+  .moon::after {
+    content: '';
+    position: absolute;
+    top: 30px; left: 45px;
+    width: 10px; height: 10px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 50%;
+  }
+
+  @keyframes moonFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* Main container */
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeUp 1s ease both;
+  }
+
+  .greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 400;
+    color: var(--moon);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .greeting em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    margin: 20px auto;
+  }
+
+  /* Message card */
+  .message-card {
+    background: var(--deep);
+    border: 1px solid rgba(201, 169, 110, 0.15);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 32px;
+    animation: fadeUp 1s ease 0.2s both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .message-card::before {
+    content: '🌙';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    font-size: 3rem;
+    opacity: 0.15;
+  }
+
+  .message-card p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .message-card p + p {
+    margin-top: 16px;
+  }
+
+  .message-card .highlight {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Game section */
+  .game-section {
+    background: var(--deep);
+    border: 1px solid rgba(201, 169, 110, 0.15);
+    border-radius: 20px;
+    padding: 36px;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .game-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--moon);
+    margin-bottom: 6px;
+  }
+
+  .game-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  /* Bubble pop game */
+  .bubble-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .bubble {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(201,169,110,0.8), rgba(100,80,40,0.6));
+    border: 1px solid rgba(201,169,110,0.3);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    position: relative;
+    overflow: hidden;
+    animation: bubbleIn 0.5s ease both;
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    width: 30%;
+    height: 20%;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+  }
+
+  .bubble:hover {
+    transform: scale(1.1);
+  }
+
+  .bubble.popped {
+    background: transparent;
+    border: 1px dashed rgba(201,169,110,0.2);
+    cursor: default;
+    animation: pop 0.3s ease forwards;
+  }
+
+  .bubble.popped::before { display: none; }
+
+  @keyframes pop {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  @keyframes bubbleIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .game-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .score {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .score span {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  .reset-btn {
+    background: transparent;
+    border: 1px solid rgba(201,169,110,0.4);
+    color: var(--accent);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.03em;
+  }
+
+  .reset-btn:hover {
+    background: rgba(201,169,110,0.1);
+    border-color: var(--accent);
+  }
+
+  .win-message {
+    text-align: center;
+    padding: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .lucky-stars {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    letter-spacing: 8px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Shooting star */
+  .shooting-star {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    top: 10%;
+    left: -10px;
+    animation: shoot 8s linear infinite;
+    opacity: 0;
+  }
+
+  .shooting-star::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to left, white, transparent);
+    transform-origin: right center;
+  }
+
+  @keyframes shoot {
+    0% { transform: translate(-10vw, 0) rotate(30deg); opacity: 0; }
+    10% { opacity: 1; }
+    40% { opacity: 0; }
+    100% { transform: translate(110vw, 40vw) rotate(30deg); opacity: 0; }
+  }
+
+  .shooting-star:nth-child(2) { animation-delay: 3s; top: 5%; }
+  .shooting-star:nth-child(3) { animation-delay: 6s; top: 15%; }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Shooting stars -->
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+<div class="shooting-star"></div>
+
+<!-- Moon -->
+<div class="moon"></div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="greeting">Buenas noches,<br><em>Day</em> 🌙</div>
+    <div class="divider"></div>
+    <div class="subtitle">ya descansa, mañana lo vas a hacer muy bien</div>
+  </div>
+
+  <div class="message-card">
+    <p>Oye, antes de dormir quería decirte que <span class="highlight">mañana vas a estar increíble en tu examen</span>. Ya estudiaste, ya hiciste lo que tenías que hacer — ahora solo descansa y deja que tu cerebro haga su trabajo.</p>
+    <p>Y si en algún momento sientes nervios, recuerda que eres de las personas que se levanta temprano a resolver cálculo antes del desayuno. Eso no lo hace cualquiera. 🌸</p>
+    <p>Que duermas bien. <span class="highlight">Mucha suerte mañana</span>, aunque creo que no la vas a necesitar.</p>
+  </div>
+
+  <div class="game-section">
+    <div class="game-title">Mini desestresante 🫧</div>
+    <div class="game-desc">Revienta todas las burbujas antes de dormir — dicen que ayuda a relajarse jajsj</div>
+
+    <div class="bubble-grid" id="bubbleGrid"></div>
+
+    <div class="win-message" id="winMsg">
+      ✨ Todas reventadas — ahora sí a dormir 🌙
+    </div>
+
+    <div class="game-stats">
+      <div class="score">Reventadas: <span id="count">0</span> / <span id="total">0</span></div>
+      <button class="reset-btn" onclick="initGame()">Recargar burbujas</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="lucky-stars">⭐✨🌟</div>
+    <p>que tus sueños sean tan bonitos como tus lirios favoritos</p>
+  </div>
+
+</div>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    const size = Math.random() * 2.5 + 0.5;
+    star.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      --dur: ${Math.random() * 3 + 2}s;
+      --delay: ${Math.random() * 4}s;
+    `;
+    starsEl.appendChild(star);
+  }
+
+  // Bubble game
+  let popped = 0;
+  let total = 0;
+
+  function initGame() {
+    const grid = document.getElementById('bubbleGrid');
+    const winMsg = document.getElementById('winMsg');
+    grid.innerHTML = '';
+    popped = 0;
+    total = 30;
+    winMsg.style.display = 'none';
+    document.getElementById('total').textContent = total;
+    document.getElementById('count').textContent = 0;
+
+    for (let i = 0; i < total; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      bubble.style.animationDelay = (i * 0.03) + 's';
+      bubble.addEventListener('click', () => {
+        if (!bubble.classList.contains('popped')) {
+          bubble.classList.add('popped');
+          popped++;
+          document.getElementById('count').textContent = popped;
+          if (popped === total) {
+            setTimeout(() => {
+              winMsg.style.display = 'block';
+            }, 400);
+          }
+        }
+      });
+      grid.appendChild(bubble);
+    }
+  }
+
+  initGame();
+</script>
+</body>
+</html>
