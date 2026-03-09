@@ -441,6 +441,7 @@
           bubble.classList.add('popped');
           popped++;
           document.getElementById('count').textContent = popped;
+          playPop();
           if (popped === total) {
             setTimeout(() => {
               winMsg.style.display = 'block';
@@ -450,6 +451,22 @@
       });
       grid.appendChild(bubble);
     }
+  }
+
+  // Pop sound
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playPop() {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600 + Math.random() * 300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.15);
   }
 
   initGame();
